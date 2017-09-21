@@ -41,7 +41,7 @@ export abstract class BladeBase {
     /**
      * Action to check if the blade can be closed
      */
-    abstract readonly checkCanClose = () => Promise.resolve(true);
+    abstract checkCanClose = () => Promise.resolve(true);
 }
 
 export abstract class Blade extends BladeBase {

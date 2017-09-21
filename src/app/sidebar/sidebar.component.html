@@ -1,8 +1,8 @@
-<div>
-    <div *ngFor="let blade of blades; index as i">
+<div id="sidebar">
+    <div class="col blade" *ngFor="let blade of blades; index as i">
         <div>
             <h5>{{blade.title}}</h5>
-            <button (click)="closeBlade(i)">X</button>
+            <button class="close-btn" (click)="closeBlade(i)">X</button>
         </div>
         <ng-template blade-host></ng-template>
     </div>

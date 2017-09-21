@@ -1,3 +1,4 @@
+@import '../../styles';
 #sidebar {
     display: flex;
 	flex-direction: row-reverse;
@@ -6,12 +7,17 @@
 	align-items: stretch;
     align-content: stretch;
     max-width: 70vw;
+    @include h-100();
     >.col {
         padding-left: 0;
         > div > .row{
             padding-left: 15px;
         }
     }
+}
+.blade {
+    border: 1px solid lightgray;
+    @include h-100();
 }
 
 .content {

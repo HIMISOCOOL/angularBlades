@@ -46,12 +46,17 @@ export class PropertiesComponent implements OnInit, Blade {
     public openChildBlade() {
         this.bladeService.navigateTo(new EditPropertyInputs(some(this)));
         const thisIndex = this.bladeService.blades.findIndex(b => b.title === this.title);
-        const lastIndex = this.bladeService.blades.length - 1;
-        this.checkCanClose = async function () {
-            return thisIndex < lastIndex
-                ? await this.bladeService.blades[lastIndex].checkCanClose()
-                : true;
+        const checkCanClose = function (bladeService: BladeService) {
+            return async function () {
+                console.log('From open child blade');
+                const lastIndex = bladeService.blades.length - 1;
+                return thisIndex < lastIndex
+                    ? await bladeService.blades[lastIndex].checkCanClose()
+                    : true;
+            };
         };
+        this.checkCanClose = checkCanClose(this.bladeService);
+        this.bladeService.blades[thisIndex].checkCanClose = this.checkCanClose;
     }
 
 }
