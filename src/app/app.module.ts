@@ -7,6 +7,7 @@ import { LeftsidebarComponent } from './leftsidebar/leftsidebar.component';
 import { InfoComponent } from './leftsidebar/info/info.component';
 import { BladeModule } from './blades/blade.module';
 import { PropertiesComponent } from './sidebar/properties/properties.component';
+import { EditPropertyComponent } from './sidebar/properties/edit-property/edit-property.component';
 
 @NgModule({
     declarations: [
@@ -14,7 +15,8 @@ import { PropertiesComponent } from './sidebar/properties/properties.component';
         SidebarComponent,
         LeftsidebarComponent,
         InfoComponent,
-        PropertiesComponent
+        PropertiesComponent,
+        EditPropertyComponent
     ],
     imports: [
         BrowserModule,
@@ -24,7 +26,8 @@ import { PropertiesComponent } from './sidebar/properties/properties.component';
     bootstrap: [AppComponent],
     entryComponents: [
         InfoComponent,
-        PropertiesComponent
+        PropertiesComponent,
+        EditPropertyComponent
     ]
 })
 export class AppModule { }

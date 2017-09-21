@@ -39,7 +39,7 @@ export class SidebarComponent extends BladeHost implements OnInit, AfterViewInit
     ngAfterViewInit(): void {
         this.previousLength = this.bladeHosts.length;
         this.bladeHosts.changes.subscribe((bladeHosts: QueryList<BladeHostDirective>) => {
-            if (this.previousLength < bladeHosts.length) {
+            if (this.previousLength <= bladeHosts.length) {
                 BladeService.createBlade(
                     this.componentFactoryResolver,
                     bladeHosts.last.viewContainerRef,

@@ -68,13 +68,13 @@ export class BladeService {
     private static async checkForBladeReplace(blades: BladeInputs[], newBlade: BladeInputs) {
 
         const lastBlade = blades[blades.length - 1];
-        const closeBlade = (blade: BladeInputs) => {
-            const result = blade.onClose();
+        const closeBlade = async function (blade: BladeInputs) {
+            const result = await blade.onClose();
             const removedBlade = Result.from(blades.pop());
             return Result.firstErrOrOk(result, removedBlade);
         };
         // newblades parent is last blade or there is no last blade
-        if (lastBlade == null || (newBlade.parent.isDefined && newBlade.parent.get === lastBlade)) {
+        if (lastBlade == null || (newBlade.parent.isDefined && newBlade.parent.get.title === lastBlade.title)) {
             // nothing
             return { blades, result: ok(newBlade) };
         }
@@ -83,7 +83,7 @@ export class BladeService {
             ? await lastBlade.checkCanClose()
             : await checkLastBladeCanClose(lastBlade);
         const result = canClose
-            ? closeBlade(lastBlade)
+            ? await closeBlade(lastBlade)
             : Result.err('Could not close blade');
         return { blades, result };
     }
@@ -117,7 +117,9 @@ export class BladeService {
         const blade = this.blades[index];
         const canClose = await blade.checkCanClose();
         if (canClose) {
-            this.blades.splice(index, 1);
+            this.blades = index < this.blades.length - 1
+                ? this.blades = []
+                : this.blades.filter(b => b.title !== blade.title);
             this.blade$.next(none);
         }
         return blade.onClose();
