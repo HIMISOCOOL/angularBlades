@@ -1,0 +1,53 @@
+#sidebar {
+    display: flex;
+	flex-direction: row-reverse;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+    align-content: stretch;
+    max-width: 70vw;
+    >.col {
+        padding-left: 0;
+        > div > .row{
+            padding-left: 15px;
+        }
+    }
+}
+
+.content {
+    max-height: 90%;
+    height: 90%;
+}
+
+.header-wrapper {
+    padding: 0.75rem;
+    max-height: 10%;
+}
+
+.col {
+    width: 20vw;
+}
+
+.close-btn {
+    position: absolute;
+    z-index: 1;
+}
+
+.search-box-row {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.check-box-row {
+    padding-left: 0;
+    margin-left: 15px;
+}
+
+:host /deep/ {
+    .tab-content, .tab-pane {
+        height: 100%;
+    }
+    .nav-link {
+        white-space: nowrap;
+    }
+}

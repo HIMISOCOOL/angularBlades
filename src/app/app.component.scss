@@ -1,0 +1,16 @@
+.right-sidebar,
+.left-sidebar {
+    position: absolute;
+    z-index: 1;
+    background: white;
+    border: 1px solid lightgray;
+    height: 100%;
+}
+
+.right-sidebar {
+    right: 0;
+}
+
+.left-sidebar {
+    left: 0;
+}
