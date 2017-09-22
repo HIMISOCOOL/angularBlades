@@ -1,15 +1,11 @@
 import {
     Component,
-    OnInit,
     ViewChildren,
     QueryList,
     ComponentFactoryResolver,
-    OnDestroy,
-    AfterViewInit,
     ChangeDetectorRef
 } from '@angular/core';
-import { Subscription } from 'rxjs/Rx';
-import { BladeService, BladeHostDirective, right, BladeHost, Blade, BladeInputs } from 'app/blades';
+import { BladeHost, right, BladeHostDirective, BladeService } from 'app/blades';
 
 
 @Component({
