@@ -15,7 +15,7 @@ export class EditPropertyInputs extends BladeInputs {
     direction: boolean = right;
     type: Type<EditPropertyComponent> = EditPropertyComponent;
     isSaved: boolean = true;
-    onClose = () => this.checkCanClose()
+    close = () => this.checkCanClose()
         .then(canClose => canClose
             ? Result.ok()
             : Result.err('Not Saved'))
@@ -36,7 +36,7 @@ export class EditPropertyComponent implements OnInit, Blade {
     parent: Option<Blade>;
     direction: boolean;
     type: Type<Blade>;
-    onClose: () => Promise<Result>;
+    close: () => Promise<Result>;
     checkCanClose: () => Promise<boolean>;
 
     constructor(

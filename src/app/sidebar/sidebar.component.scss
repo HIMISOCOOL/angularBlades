@@ -1,25 +1,5 @@
-@import '../../styles';
-#sidebar {
-    display: flex;
-	flex-direction: row-reverse;
-	flex-wrap: nowrap;
-	justify-content: flex-start;
-	align-items: stretch;
-    align-content: stretch;
-    max-width: 70vw;
-    @include h-100();
-    >.col {
-        padding-left: 0;
-        > div > .row{
-            padding-left: 15px;
-        }
-    }
-}
-.blade {
-    border: 1px solid lightgray;
-    @include h-100();
-}
-
+@import '../blades/base/blade.scss';
+@import '../../styles.scss';
 .content {
     max-height: 90%;
     height: 90%;
@@ -28,15 +8,6 @@
 .header-wrapper {
     padding: 0.75rem;
     max-height: 10%;
-}
-
-.col {
-    width: 20vw;
-}
-
-.close-btn {
-    position: absolute;
-    z-index: 1;
 }
 
 .search-box-row {

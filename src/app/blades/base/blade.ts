@@ -37,7 +37,7 @@ export abstract class BladeBase {
     /**
      * The action to complete on close
      */
-    abstract readonly onClose: () => Promise<Result>;
+    abstract readonly close: () => Promise<Result>;
     /**
      * Action to check if the blade can be closed
      */

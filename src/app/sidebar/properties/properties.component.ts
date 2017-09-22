@@ -9,7 +9,7 @@ export class PropertiesInputs extends BladeInputs {
     parent: Option<Blade> = none;
     direction: boolean = right;
     type: Type<PropertiesComponent> = PropertiesComponent;
-    onClose = () => this.checkCanClose()
+    close = () => this.checkCanClose()
         .then(canClose => canClose
             ? Result.ok()
             : Result.err('Not Saved'))
@@ -33,7 +33,7 @@ export class PropertiesComponent implements OnInit, Blade {
     direction: boolean;
     type: Type<PropertiesComponent>;
     @Input() properties: string[];
-    onClose: () => Promise<Result>;
+    close: () => Promise<Result>;
     checkCanClose: () => Promise<boolean>;
     constructor(
         public readonly cdRef: ChangeDetectorRef,

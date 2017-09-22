@@ -8,7 +8,7 @@ export class InfoInputs extends BladeInputs {
     parent: Option<Blade> = none;
     direction: boolean = left;
     type: Type<InfoComponent> = InfoComponent;
-    onClose = () => this.checkCanClose()
+    close = () => this.checkCanClose()
         .then(canClose => canClose
             ? Result.ok()
             : Result.err('Not Saved'))
@@ -26,7 +26,7 @@ export class InfoComponent implements OnInit, Blade {
     direction: boolean = left;
     title = 'Information';
     parent: Option<Blade> = none;
-    onClose: () => Promise<Result>;
+    close: () => Promise<Result>;
     checkCanClose: () => Promise<boolean>;
 
     constructor(

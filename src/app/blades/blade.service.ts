@@ -8,18 +8,7 @@ import {
 import { Direction, Blade, BladeBase } from './base/blade';
 import { BladeInputs } from './base/blade-inputs';
 import { Option, option, none, some } from 'ts-option';
-import { Result, ok, err } from 'app/util/result';
-
-async function checkLastBladeCanClose(lastBlade: BladeInputs) {
-    let lastBladeMut = lastBlade.parent;
-    let canClose = false;
-    // check last blade parent.parent until none
-    while (lastBladeMut !== none) {
-        canClose = await lastBladeMut.get.checkCanClose();
-        lastBladeMut = lastBladeMut.get.parent;
-    }
-    return canClose;
-}
+import { Result, ok, err, ResultT } from 'app/util/result';
 
 @Injectable()
 /**
@@ -60,35 +49,44 @@ export class BladeService {
     }
 
     /**
-     * Checks if the last blade in the list is the same as the parent of the new blade, if so removes it.
+     * decides how to deal with the new blade in relation to existing blades.
      * @param blades the blades list to check
      * @param newBladeParent the parent of the new blade
      */
-    // tslint:disable-next-line:member-ordering
     private static async checkForBladeReplace(blades: BladeInputs[], newBlade: BladeInputs) {
-
         const lastBlade = blades[blades.length - 1];
-        const closeBlade = async function (blade: BladeInputs) {
-            const result = await blade.onClose();
-            const removedBlade = Result.from(blades.pop());
-            return Result.firstErrOrOk(result, removedBlade);
-        };
-        // newblades parent is last blade or there is no last blade
-        if (lastBlade == null || (newBlade.parent.isDefined && newBlade.parent.get.title === lastBlade.title)) {
-            // nothing
+        const newBladeIsChildOfOld = newBlade.parent.isDefined && newBlade.parent.get.title === lastBlade.title;
+        if (lastBlade == null || newBladeIsChildOfOld) {
+            // no need for replace
             return { blades, result: ok(newBlade) };
         }
-
-        const canClose = newBlade.parent === lastBlade.parent || newBlade.direction !== lastBlade.direction
-            ? await lastBlade.checkCanClose()
-            : await checkLastBladeCanClose(lastBlade);
-        const result = canClose
-            ? await closeBlade(lastBlade)
-            : Result.err('Could not close blade');
-        return { blades, result };
+        const bladeError = Result.err('Could not close blade');
+        const bladesHaveSameDirection = newBlade.direction === lastBlade.direction;
+        if (!bladesHaveSameDirection) {
+            const reduceCheckCanClose = (prev: Promise<boolean>, curr: BladeInputs) => prev.then(pre => pre && curr.checkCanClose());
+            const reduceOnCloseResults = async function (prev: Promise<Result>, curr: BladeInputs) {
+                const result = await Promise.all([prev, curr.close()])
+                    .then(results => Result.firstErrOrOk(...results));
+                return result;
+            };
+            // close all blades
+            const canClose = await blades.reduce(reduceCheckCanClose, Promise.resolve(true));
+            return canClose
+                ? { blades: [], result: await blades.reduce(reduceOnCloseResults, Promise.resolve(Result.ok())) }
+                : { blades, result: bladeError };
+        }
+        const bladesHaveSameParent = newBlade.parent === lastBlade.parent;
+        if (bladesHaveSameDirection) {
+            // close the last blade
+            const canClose = await lastBlade.checkCanClose();
+            return canClose
+                ? { blades: blades.filter(b => b !== lastBlade), result: await lastBlade.close() }
+                : { blades, result: bladeError };
+        }
+        return { blades, result: bladeError };
     }
 
-    private nextFluent = <T>(subject: BehaviorSubject<T>) => (value: T) => {
+    private nextFluent = <T>(subject: BehaviorSubject<T>, value: T) => {
         subject.next(value);
         return value;
     }
@@ -100,10 +98,11 @@ export class BladeService {
     public async navigateTo(blade: BladeInputs) {
         const { blades, result } = await BladeService.checkForBladeReplace(this.blades, blade);
         const blade$Next = (value: BladeInputs) => {
-            this.blades.push(blade);
-            this.nextFluent(this.blade$)(some(value));
-            return blade;
+            this.blades.push(value);
+            this.nextFluent(this.blade$, some(value));
+            return value;
         };
+        this.blades = blades;
         return result.isSuccess
             ? ok(blade$Next(blade))
             : err<Blade>(result.error);
@@ -122,7 +121,7 @@ export class BladeService {
                 : this.blades.filter(b => b.title !== blade.title);
             this.blade$.next(none);
         }
-        return blade.onClose();
+        return blade.close();
     }
 }
 
