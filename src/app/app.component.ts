@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BladeService } from 'app/blades';
-import { InfoInputs } from './leftsidebar/info/info.component';
-import { PropertiesInputs } from './sidebar/properties/properties.component';
+import { InfoInputs } from './child-module/info/info.component';
+import { PropertiesInputs } from './child-module/properties/properties.component';
 
 @Component({
     selector: 'app-root',
